@@ -77,7 +77,7 @@ const Translator = () => {
 
                 {language.map((ele) => (
                   <SelectLanguage
-                    key={"sel" + Math.floor(Math.random() * 10000)}
+                    key={"sel"}
                     dataObj={ele}
                   />
                 ))}
@@ -89,17 +89,17 @@ const Translator = () => {
 
                 {language.map((ele) => (
                   <SelectLanguage
-                    key={"trans" + Math.floor(Math.random() * 10000)}
+                    key={"trans"}
                     dataObj={ele}
                   />
                 ))}
               </select>
             </div>
             <div className="textContainer">
-              <div className="input-container">
-                <input type="text" name="inputValue" />
-              </div>
-              <div className="output-container">{output}</div>
+              
+                <textarea type="text" name="inputValue" placeholder="Enter Text" rows={5} cols={50}></textarea>
+              
+              <textarea type="text" name="outputValue" placeholder={output} rows={5} cols={50}></textarea>
             </div>
             <button>Translate</button>
           </form>
