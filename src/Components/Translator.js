@@ -1,103 +1,112 @@
-import React,{useState, useEffect} from 'react'
-import SelectLanguage from './SelectLanguage';
-import './Translator.css';
-const Main = () => {
-    const [output, setOutput] = useState("");
-    const [language, setLanguage] = useState([]);
+import React, { useState, useEffect } from "react";
+import SelectLanguage from "./SelectLanguage";
+import "./Translator.css";
+const Translator = () => {
+  const [output, setOutput] = useState("");
+  const [language, setLanguage] = useState([]);
+ 
+  useEffect(() => {
+    getLanguages();
+  }, []);
 
-useEffect(()=>{
-getLanguages();
-},[]);
-
-async function getLanguages(){
-    const url = 'https://text-translator2.p.rapidapi.com/getLanguages';
+  async function getLanguages() {
+    const url = "https://text-translator2.p.rapidapi.com/getLanguages";
     const options = {
-        method: 'GET',
-        headers: {
-            'X-RapidAPI-Key': '0b9a1016admsh3fce878d8ac28efp1d333djsna6ace521134a',
-            'X-RapidAPI-Host': 'text-translator2.p.rapidapi.com'
-        }
+      method: "GET",
+      headers: {
+        "X-RapidAPI-Key": "0b9a1016admsh3fce878d8ac28efp1d333djsna6ace521134a",
+        "X-RapidAPI-Host": "text-translator2.p.rapidapi.com",
+      },
     };
-    
+
     try {
-        const response = await fetch(url, options);
-        const result = await response.text();
-        const newData = JSON.parse(result);
-        setLanguage(newData.data.languages);
+      const response = await fetch(url, options);
+      const result = await response.text();
+      const newData = JSON.parse(result);
+      setLanguage(newData.data.languages);
     } catch (error) {
-        alert("Error!");
+      alert("Error!");
     }
+  }
 
-}
-
-async function fetchData (selectedLanguage, translatedLanguage, inputValue){
-    const url = 'https://text-translator2.p.rapidapi.com/translate';
+  async function fetchData(selectedLanguage, translatedLanguage, inputValue) {
+    const url = "https://text-translator2.p.rapidapi.com/translate";
     const options = {
-        method: 'POST',
-        headers: {
-            'content-type': 'application/x-www-form-urlencoded',
-            'X-RapidAPI-Key': '0b9a1016admsh3fce878d8ac28efp1d333djsna6ace521134a',
-            'X-RapidAPI-Host': 'text-translator2.p.rapidapi.com'
-        },
-        body: new URLSearchParams({
-            source_language: selectedLanguage,
-            target_language: translatedLanguage,
-            text: inputValue
-        })
+      method: "POST",
+      headers: {
+        "content-type": "application/x-www-form-urlencoded",
+        "X-RapidAPI-Key": "0b9a1016admsh3fce878d8ac28efp1d333djsna6ace521134a",
+        "X-RapidAPI-Host": "text-translator2.p.rapidapi.com",
+      },
+      body: new URLSearchParams({
+        source_language: selectedLanguage,
+        target_language: translatedLanguage,
+        text: inputValue,
+      }),
     };
-    
-    try {
-        const response = await fetch(url, options);
-        const result = await response.text();
-       const newResult =JSON.parse(result);
-       setOutput(newResult.data.translatedText);
-    } catch (error) {
-       alert("Limit exhausted");
-    }
-}
 
-function formInput(e){
+    try {
+      const response = await fetch(url, options);
+      const result = await response.text();
+      const newResult = JSON.parse(result);
+      setOutput(newResult.data.translatedText);
+    } catch (error) {
+      alert("Error!");
+    }
+  }
+
+  function formInput(e) {
     e.preventDefault();
 
-const selectedLanguage = e.target.children[0].value;
-const translatedLanguage = e.target.children[1].value;
-const inputValue = e.target.children[2].value;
-fetchData(selectedLanguage, translatedLanguage, inputValue);
-}
+    const selectedLanguage = e.target.elements["Select Language"].value;
+    const translatedLanguage = e.target.elements["Converted Language"].value;
+    const inputValue = e.target.elements["inputValue"].value;
+    fetchData(selectedLanguage, translatedLanguage, inputValue);
+  }
 
   return (
-   <>
-   <main className="main">
-    <form action="" onSubmit={(e)=>formInput(e)}>
-        <select name="Select Language" id="">
-            <option value="" disabled="true">Select Your Language</option>
-            
-            {
-                language.map((ele)=>(<SelectLanguage key={'sel'+ Math.floor(Math.random()*10000)} dataObj={ele}/>))
-            }
-        </select>
-        <select name="Converted Language" id="">
-            <option value="" disabled="true">
-                Select Converted Language
-            </option>
-           
-            {
-                language.map((ele)=>(<SelectLanguage key={'trans'+ Math.floor(Math.random()*10000)} dataObj={ele}/>))
-            }
-        </select>
-        <input type="text" />
-        <button>Translate</button>
-    </form>
+    <>
+      <main className="main">
+        <div className="formTranslator">
+          <form action="" onSubmit={(e) => formInput(e)}>
+            <div className="languageSelector">
+              <select name="Select Language" id="">
+                <option value="" disabled="true">
+                  Select Your Language
+                </option>
 
+                {language.map((ele) => (
+                  <SelectLanguage
+                    key={"sel" + Math.floor(Math.random() * 10000)}
+                    dataObj={ele}
+                  />
+                ))}
+              </select>
+              <select name="Converted Language" id="" >
+                <option value="" disabled="true">
+                  Select Converted Language
+                </option>
 
-<div className="output-container">
-{output}
-</div>
+                {language.map((ele) => (
+                  <SelectLanguage
+                    key={"trans" + Math.floor(Math.random() * 10000)}
+                    dataObj={ele}
+                  />
+                ))}
+              </select>
+            </div>
+            <div className="textContainer">
+              <div className="input-container">
+                <input type="text" name="inputValue" />
+              </div>
+              <div className="output-container">{output}</div>
+            </div>
+            <button>Translate</button>
+          </form>
+        </div>
+      </main>
+    </>
+  );
+};
 
-   </main>
-   
-   </>
-  )
-}
-
-export default Main
+export default Translator;
